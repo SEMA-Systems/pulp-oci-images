@@ -1,0 +1,49 @@
+ARG FROM_TAG="3.74.1"
+FROM pulp/base:${FROM_TAG}
+
+ARG PULPCORE_VERSION="3.74.1"
+ARG PULP_ANSIBLE_VERSION="0.24.2"
+ARG PULP_CERTGUARD_VERSION="1.8.0"
+ARG PULP_CONTAINER_VERSION="2.24.1"
+ARG PULP_DEB_VERSION="3.5.1"
+ARG PULP_FILE_VERSION="1.16.0"
+ARG PULP_MAVEN_VERSION="0.9.0"
+ARG PULP_PYTHON_VERSION="3.13.2"
+ARG PULP_RPM_VERSION="3.29.0"
+ARG PULP_OSTREE_VERSION="2.4.6"
+ARG PULP_NPM_VERSION="custom-0.3.0"
+ARG PULP_CONDA_VERSION="0.0.1"
+
+COPY images/assets/requirements.extra.txt /requirements.extra.txt
+COPY images/assets/requirements.minimal.txt /requirements.minimal.txt
+
+RUN pip3 install --upgrade \
+  pulpcore[s3,google,azure]==${PULPCORE_VERSION} \
+  pulp-ansible==${PULP_ANSIBLE_VERSION} \
+  pulp-certguard==${PULP_CERTGUARD_VERSION} \
+  pulp-container==${PULP_CONTAINER_VERSION} \
+  pulp-deb==${PULP_DEB_VERSION} \
+  pulp-file==${PULP_FILE_VERSION} \
+  pulp-maven==${PULP_MAVEN_VERSION} \
+  pulp-python==${PULP_PYTHON_VERSION} \
+  pulp-rpm==${PULP_RPM_VERSION} \
+  pulp-ostree==${PULP_OSTREE_VERSION} \
+  git+https://github.com/SEMA-Systems/pulp_npm@${PULP_NPM_VERSION} \
+  git+https://github.com/SEMA-Systems/pulp_conda@${PULP_CONDA_VERSION} \
+   \
+  -r /requirements.extra.txt \
+  -r /requirements.minimal.txt \
+  -c /constraints.txt && \
+  rm -rf /root/.cache/pip
+
+# Prevent pip-installed /usr/local/bin/pulp-content from getting run instead of
+# our /usr/bin/pulp-content script.
+RUN rm -f /usr/local/bin/pulp-content
+
+USER pulp:pulp
+RUN PULP_STATIC_ROOT=/var/lib/operator/static/ PULP_CONTENT_ORIGIN=localhost \
+       /usr/local/bin/pulpcore-manager collectstatic --clear --noinput --link
+USER root:root
+
+RUN chmod 2775 /var/lib/pulp/{scripts,media,tmp,assets}
+RUN chown :root /var/lib/pulp/{scripts,media,tmp,assets}

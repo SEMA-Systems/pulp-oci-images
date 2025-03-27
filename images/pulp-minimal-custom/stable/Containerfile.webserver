@@ -1,5 +1,5 @@
 ARG FROM_TAG="stable"
-FROM pulp/pulp-minimal:${FROM_TAG} as builder
+FROM pulp-minimal-custom:${FROM_TAG} as builder
 
 RUN mkdir -p /etc/nginx/pulp \
              /www/data \

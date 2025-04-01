@@ -11,8 +11,8 @@ ARG PULP_MAVEN_VERSION="0.9.0"
 ARG PULP_PYTHON_VERSION="3.13.2"
 ARG PULP_RPM_VERSION="3.29.0"
 ARG PULP_OSTREE_VERSION="2.4.6"
-ARG PULP_NPM_VERSION="custom-0.3.0"
-ARG PULP_CONDA_VERSION="0.0.1"
+ARG PULP_NPM_VERSION="custom-0.3.2"
+ARG PULP_CONDA_VERSION="0.1.0"
 
 COPY images/assets/requirements.extra.txt /requirements.extra.txt
 COPY images/assets/requirements.minimal.txt /requirements.minimal.txt

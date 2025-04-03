@@ -24,6 +24,13 @@ pulp-minimal-custom: ## Build pulp-minimal-custom stable images
 		--tag pulp-web-custom:custom-stable \
 		--tag pulp-web-custom:$(TAG)
 
+pulp-custom-nightly: ## Build pulp-custom nightly images
+	docker build \
+	    --no-cache \
+		--file images/pulp-custom/nightly/Containerfile \
+		. \
+		--tag pulp-custom:custom-latest
+
 pulp-minimal-custom-nightly: ## Build pulp-minimal-custom nightly images
 	docker build \
 	    --no-cache \
@@ -37,4 +44,4 @@ pulp-minimal-custom-nightly: ## Build pulp-minimal-custom nightly images
 		. \
 		--tag pulp-web-custom:custom-latest
 
-.PHONY: docs servedocs help pulp-minimal-custom pulp-minimal-custom-nightly
+.PHONY: docs servedocs help pulp-minimal-custom pulp-custom-nightly pulp-minimal-custom-nightly

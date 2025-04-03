@@ -1,4 +1,4 @@
-TAG := $(shell git describe --tags --abbrev=0)
+TAG := $(shell git describe --tags --abbrev=0 | sed 's/+/-/g')
 
 help: ## Show this help.
 	@sed -ne '/@sed/!s/## //p' $(MAKEFILE_LIST)
